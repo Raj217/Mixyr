@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "758784280578",
+    "project_id": "mixyr-5004a",
+    "storage_bucket": "mixyr-5004a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758784280578:android:c18fe79152862a89273f1b",
+        "android_client_info": {
+          "package_name": "com.example.mixyr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758784280578-74qpjv9s4pv8d8h758qcesickev3orsi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mixyr",
+            "certificate_hash": "e098646772e5bde7cc3435360b4f34413cbec49d"
+          }
+        },
+        {
+          "client_id": "758784280578-6isr2hm73c4ljo4e64ari257a9rkq0vp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5YA17P_Hb-JqTAIfBtKfTDGEHFDwBAFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758784280578-6isr2hm73c4ljo4e64ari257a9rkq0vp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "758784280578-r8i9hqgl5cls3g8e593oebjvmor6lce9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mixyr"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

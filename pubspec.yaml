@@ -1,0 +1,71 @@
+name: mixyr
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.3 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # firebase
+  firebase_auth: ^3.7.0
+  firebase_core: ^1.21.1
+  firebase_app_check: ^0.0.7
+  firebase_remote_config: ^2.0.16
+
+  # google
+  googleapis: ^9.1.0
+  google_sign_in: ^5.4.1
+  extension_google_sign_in_as_googleapis_auth: ^2.0.7
+
+  # widgets
+  smooth_page_indicator: ^1.0.0+2  # for page indicator
+  lottie: ^1.4.2                   # animation
+  quickalert: ^1.0.0               # Alert dialogs
+  text_scroll: ^0.1.0              # scrolling text
+  miniplayer: ^1.0.1               # miniplayer
+  pod_player: ^0.1.0               # video player
+
+  # audio
+  just_audio: ^0.9.20
+  audio_service: ^0.18.7
+  youtube_explode_dart: ^1.12.0
+
+  # necessities
+  cupertino_icons: ^1.0.5
+  flutter_svg: ^1.1.4              # svg
+  provider: ^6.0.3                 # state management
+  palette_generator: ^0.3.3+2      # for dominant color
+  shared_preferences: ^2.0.15      # storage
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/icons/
+    - assets/images/
+    - assets/lottie/
+
+  fonts:
+   - family: Lato
+     fonts:
+       - asset: assets/fonts/Lato/Lato-Black.ttf
+       - asset: assets/fonts/Lato/Lato-Bold.ttf
+       - asset: assets/fonts/Lato/Lato-Light.ttf
+       - asset: assets/fonts/Lato/Lato-Regular.ttf
+       - asset: assets/fonts/Lato/Lato-Thin.ttf
+   - family: Great Vibes
+     fonts:
+       - asset: assets/fonts/Great Vibes/GreatVibes-Regular.ttf
