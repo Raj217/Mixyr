@@ -45,3 +45,5 @@ double _relativeLimitedCalculator(
 const double kDefaultIconSize = 24;
 const double kDefaultButtonHeight = 40;
 const double kDefaultButtonWidth = 200;
+
+const Duration kDefaultAnimDuration = Duration(milliseconds: 700);

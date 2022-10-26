@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 0.0.0+1
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
@@ -24,12 +24,14 @@ dependencies:
   extension_google_sign_in_as_googleapis_auth: ^2.0.7
 
   # widgets
-  smooth_page_indicator: ^1.0.0+2  # for page indicator
-  lottie: ^1.4.2                   # animation
-  quickalert: ^1.0.0               # Alert dialogs
-  text_scroll: ^0.1.0              # scrolling text
-  miniplayer: ^1.0.1               # miniplayer
-  pod_player: ^0.1.0               # video player
+  smooth_page_indicator: ^1.0.0+2       # for page indicator
+  lottie: ^1.4.2                        # animation
+  quickalert: ^1.0.0                    # Alert dialogs
+  text_scroll: ^0.1.0                   # scrolling text
+  pod_player: ^0.1.0                    # video player
+  animated_toggle_switch: ^0.5.2        # toggling
+  page_transition: ^2.0.9               # page transition
+  audio_video_progress_bar: ^0.10.0     # progress slider
 
   # audio
   just_audio: ^0.9.20
@@ -38,11 +40,13 @@ dependencies:
 
   # necessities
   cupertino_icons: ^1.0.5
-  flutter_svg: ^1.1.4              # svg
-  provider: ^6.0.3                 # state management
-  palette_generator: ^0.3.3+2      # for dominant color
-  shared_preferences: ^2.0.15      # storage
-
+  flutter_svg: ^1.1.4          # svg
+  provider: ^6.0.3             # state management
+  palette_generator: ^0.3.3+2  # for dominant color
+  shared_preferences: ^2.0.15  # storage
+  http: ^0.13.5                # for handling requests
+  html: ^0.15.0                # for parsing
+  http_proxy: ^1.2.0           # for http proxy
 
 dev_dependencies:
   flutter_test:

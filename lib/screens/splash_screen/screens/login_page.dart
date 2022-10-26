@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/sizes.dart';
-import 'package:mixyr/config/utilities.dart';
+import 'package:mixyr/config/config.dart';
 import 'package:mixyr/screens/splash_screen/components/google_sign_in_button.dart';
 import 'package:mixyr/widgets/background/gradient_background_overlay.dart';
 import 'package:mixyr/widgets/icons/mixyr_logo.dart';

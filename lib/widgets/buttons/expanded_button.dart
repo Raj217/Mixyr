@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/palette.dart';
-import 'package:mixyr/config/sizes.dart';
+import 'package:mixyr/config/config.dart';
 
 class ExpandedButton extends StatelessWidget {
   final void Function() onTap;
   final IconData? icon;
-  final Widget? widget;
+  final Widget? child;
   final IconData backgroundShape;
-  final Color iconColor;
+  final Color? iconColor;
   final Color backgroundColor;
   final double foregroundObjectSize;
 
@@ -18,13 +17,13 @@ class ExpandedButton extends StatelessWidget {
       {Key? key,
       required this.onTap,
       this.icon,
-      this.widget,
+      this.child,
       this.backgroundShape = Icons.circle,
-      this.iconColor = kWhite,
+      this.iconColor,
       this.backgroundColor = Colors.transparent,
       this.foregroundObjectSize = kDefaultIconSize,
       this.extraBackgroundSize = 30})
-      : assert(icon != null || widget != null,
+      : assert(icon != null || child != null,
             "either icon or widget must be provided."),
         super(key: key);
 
@@ -39,12 +38,12 @@ class ExpandedButton extends StatelessWidget {
               size: foregroundObjectSize +
                   responsiveWidth(extraBackgroundSize, context),
               color: backgroundColor),
-          widget != null
-              ? widget!
+          child != null
+              ? child!
               : Icon(
                   icon!,
                   size: foregroundObjectSize,
-                  color: iconColor,
+                  color: iconColor ?? Theme.of(context).focusColor,
                 ),
         ],
       ),

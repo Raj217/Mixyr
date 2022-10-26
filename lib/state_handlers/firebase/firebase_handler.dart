@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/youtube/v3.dart';
-import 'package:mixyr/config/response.dart';
+import 'package:mixyr/config/config.dart';
 
 class FirebaseHandler extends ChangeNotifier {
   late GoogleSignIn _googleSignIn;
@@ -17,9 +17,11 @@ class FirebaseHandler extends ChangeNotifier {
     _googleSignIn = GoogleSignIn(
         scopes: ['https://www.googleapis.com/auth/youtube.force-ssl']);
   }
+  Image? _userProfileImage;
+
   // -------------------------- Getter Methods --------------------------
-  String? get getUserProfileLink => _user?.photoUrl;
   dynamic get getUserName => _user?.displayName;
+  Image? get getUserProfileImage => _userProfileImage;
 
   Future<Map<Response, String>> singIn() async {
     try {
@@ -37,7 +39,12 @@ class FirebaseHandler extends ChangeNotifier {
       if (httpClient != null) {
         _youtubeApi = YouTubeApi(httpClient);
       }
-
+      if (_user?.photoUrl != null) {
+        _userProfileImage = Image.network(
+          _user!.photoUrl!,
+          fit: BoxFit.fill,
+        );
+      }
       return _user != null
           ? {Response.success: ''}
           : {Response.firebaseNoUser: ''};

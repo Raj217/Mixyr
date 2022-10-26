@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/palette.dart';
-import 'package:mixyr/config/sizes.dart';
+import 'package:mixyr/config/config.dart';
 
 class RoundedButton extends StatelessWidget {
   final String title;

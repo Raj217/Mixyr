@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:mixyr/config/utilities.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:mixyr/config/config.dart';
 
 final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -20,20 +20,28 @@ class AudioHandlerAdmin extends ChangeNotifier {
 
   bool isPlaying = false;
   ValueNotifier<bool> isMediaInitialised = ValueNotifier(false);
+  Image _thumbnailImage = Image.asset(
+    paths[Paths.defaultAlbumArt]!,
+    fit: BoxFit.fill,
+  );
+  Color? _dominantColor;
 
+  Color? get getDominantColor => _dominantColor;
   MediaItem? get getMediaItem => _audioHandler.mediaItem.value;
   Duration get getAudioPosition => _audioPlayer.position;
   Duration? get getAudioTotalDuration => _audioPlayer.duration;
   ValueNotifier<bool> get getIsMediaInitialised => isMediaInitialised;
+  Image get getThumbnailImage => _thumbnailImage;
   Stream<MediaState> get getMediaStateStream =>
       Rx.combineLatest2<MediaItem?, Duration, MediaState>(
           _audioHandler.mediaItem,
           AudioService.position,
           (mediaItem, position) => MediaState(mediaItem, position));
   AudioHandler get getAudioHandler => _audioHandler;
+  Stream<Duration> get positionStream => _audioPlayer.positionStream;
 
-  Future<Color?> getDominantColor() async {
-    return await dominantColor(
+  Future<void> calcDominantColor() async {
+    _dominantColor = await dominantColor(
         img: Image.network(_audioHandler.mediaItem.value!.artUri.toString()));
   }
 
@@ -78,6 +86,23 @@ class AudioHandlerAdmin extends ChangeNotifier {
     await _audioHandler.updateMediaItem(mItem);
     await _currentPlaylist.add(AudioSource.uri(Uri.parse(mItem.id)));
     isMediaInitialised.value = true;
+    try {
+      _thumbnailImage = mItem.artUri?.path != null
+          ? Image.network(
+              mItem.artUri!.toString(),
+              fit: BoxFit.cover,
+            )
+          : Image.asset(
+              paths[Paths.defaultAlbumArt]!,
+              fit: BoxFit.fill,
+            );
+    } catch (_) {
+      _thumbnailImage = Image.asset(
+        paths[Paths.defaultAlbumArt]!,
+        fit: BoxFit.fill,
+      );
+    }
+    calcDominantColor();
     notifyListeners();
   }
 }

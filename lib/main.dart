@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:mixyr/state_handlers/proxy/proxy_handler.dart';
 import 'package:provider/provider.dart';
-
 import 'firebase_options.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/splash_screen/splash_screen.dart';
@@ -29,12 +30,15 @@ void main() async {
         androidNotificationOngoing: true,
       ));
 
-  // ---------------------- initializing storage  ---------------------
-  StorageHandler();
+  // ---------------------- initializing proxy  ---------------------
+  if (await StorageHandler().getIsProxyEnabled()) {
+    await ProxyHandler.setUpProxy(host: '172.16.199.40', port: '8080');
+  }
   // ---------------------- initializing firebase ---------------------
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  Paint.enableDithering = true;
   // debugRepaintRainbowEnabled = true;
   runApp(const MyApp());
 }

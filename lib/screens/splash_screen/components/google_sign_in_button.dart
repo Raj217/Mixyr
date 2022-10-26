@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/paths.dart';
-import 'package:mixyr/config/response.dart';
-import 'package:mixyr/config/sizes.dart';
+import 'package:mixyr/config/config.dart';
 import 'package:mixyr/screens/home/home_screen.dart';
 import 'package:mixyr/state_handlers/firebase/firebase_handler.dart';
 import 'package:mixyr/state_handlers/storage/storage_handler.dart';

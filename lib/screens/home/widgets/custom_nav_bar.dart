@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/palette.dart';
-import 'package:mixyr/config/sizes.dart';
+import 'package:mixyr/config/config.dart';
 import 'package:mixyr/widgets/custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:mixyr/widgets/custom_navigation_bar/custom_navigation_bar_item.dart';
 
@@ -44,8 +43,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
   Widget build(BuildContext context) {
     return CustomNavigationBar(
       iconSize: widget.height,
-      borderRadius: const Radius.circular(15),
       currentIndex: _currentlySelectedScreen,
+      borderRadius: Radius.circular(10),
       items: [
         _getNavBarItem(
             icon: Icons.home_outlined, selectedIcon: Icons.home, title: "Home"),

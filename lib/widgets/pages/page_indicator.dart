@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/palette.dart';
+import 'package:mixyr/config/configurations/palette.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class PageIndicator extends StatelessWidget {

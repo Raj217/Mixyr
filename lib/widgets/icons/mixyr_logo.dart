@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mixyr/config/paths.dart';
-import 'package:mixyr/config/sizes.dart';
+import 'package:mixyr/config/config.dart';
 
 enum LogoType { noTitle, horizontal, vertical }
 
@@ -10,12 +9,14 @@ class MixyrLogo extends StatelessWidget {
   final double logoSize;
   final double fontSize;
   final double gap;
+  final double letterSpacing;
   const MixyrLogo(
       {Key? key,
       this.logoType = LogoType.horizontal,
-      this.logoSize = 25,
+      this.logoSize = 17,
       this.fontSize = 17,
-      this.gap = 10})
+      this.gap = 10,
+      this.letterSpacing = 7})
       : super(key: key);
 
   @override
@@ -27,7 +28,10 @@ class MixyrLogo extends StatelessWidget {
                 logoSize: logoSize,
               ),
               SizedBox(width: gap),
-              _MixyrText(fontSize: fontSize)
+              _MixyrText(
+                fontSize: fontSize,
+                letterSpacing: letterSpacing,
+              )
             ],
           )
         : logoType == LogoType.vertical
@@ -37,7 +41,10 @@ class MixyrLogo extends StatelessWidget {
                     logoSize: logoSize,
                   ),
                   SizedBox(height: gap),
-                  _MixyrText(fontSize: fontSize)
+                  _MixyrText(
+                    fontSize: fontSize,
+                    letterSpacing: letterSpacing,
+                  )
                 ],
               )
             : _MixyrLogo(
@@ -62,14 +69,19 @@ class _MixyrLogo extends StatelessWidget {
 
 class _MixyrText extends StatelessWidget {
   final double fontSize;
-  const _MixyrText({Key? key, required this.fontSize}) : super(key: key);
+  final double letterSpacing;
+  const _MixyrText(
+      {Key? key, required this.fontSize, required this.letterSpacing})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       'Mixyr',
       style: TextStyle(
-          fontSize: fontSize, letterSpacing: 7, fontWeight: FontWeight.w300),
+          fontSize: fontSize,
+          letterSpacing: letterSpacing,
+          fontWeight: FontWeight.w300),
     );
   }
 }

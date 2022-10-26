@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/sizes.dart';
-import 'package:mixyr/screens/home/components/custom_app_bar.dart';
-import 'package:mixyr/screens/home/components/custom_nav_bar.dart';
+import 'package:mixyr/screens/home/widgets/custom_app_bar.dart';
 import 'package:mixyr/screens/home/screens/explore_page.dart';
 import 'package:mixyr/screens/home/screens/home_page.dart';
 import 'package:mixyr/screens/home/screens/library_page.dart';
 
-import 'components/player.dart';
+import 'widgets/custom_nav_bar.dart';
+import 'widgets/miniplayer.dart';
+import 'package:mixyr/config/config.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = "Home Screen";
@@ -17,43 +17,39 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  static const Map<int, Widget> pageMap = {
-    0: HomePage(),
-    1: ExplorePage(),
-    2: LibraryPage()
-  };
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  static const List<Widget> pageMap = [
+    HomePage(),
+    ExplorePage(),
+    LibraryPage()
+  ];
   int _currentlySelectedScreen = 0;
   double height = kDefaultIconSize;
+  ValueNotifier<double> miniPlayerHeight = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Player(
-          height: 2.4 * height,
-          appBar: Padding(
-            padding: EdgeInsets.all(responsiveWidth(15, context)),
-            child: const CustomAppBar(),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                child: RepaintBoundary(
-                  child: pageMap[_currentlySelectedScreen]!,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            CustomScrollView(
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: responsiveWidth(8, context)),
+                  sliver: const CustomAppBar(),
                 ),
-              ),
-            ],
-          ),
-          navBar: CustomNavBar(
-            height: height,
-            onPageChange: (int index) {
-              setState(() {
-                _currentlySelectedScreen = index;
-              });
-            },
-          ),
+                pageMap[_currentlySelectedScreen],
+              ],
+            ),
+            Miniplayer(
+              height: 80,
+              miniPlayerPercentageNotifier: miniPlayerHeight,
+            ),
+            const SizedBox(height: 80, child: CustomNavBar()),
+          ],
         ),
       ),
     );

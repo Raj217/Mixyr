@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/config/palette.dart';
+import 'package:mixyr/config/configurations/palette.dart';
 
 ThemeData darkTheme = ThemeData(
   primaryColor: kBlack,
