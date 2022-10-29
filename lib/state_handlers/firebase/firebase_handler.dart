@@ -5,12 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/youtube/v3.dart';
 import 'package:mixyr/config/config.dart';
+import 'package:googleapis_auth/googleapis_auth.dart';
 
 class FirebaseHandler extends ChangeNotifier {
   late GoogleSignIn _googleSignIn;
   GoogleSignInAccount? _user;
   late FirebaseAuth _firebaseAuth;
-  late YouTubeApi _youtubeApi;
+  String? currentVideoId;
+  YouTubeApi? youtubeApi;
 
   FirebaseHandler() {
     _firebaseAuth = FirebaseAuth.instance;
@@ -22,8 +24,9 @@ class FirebaseHandler extends ChangeNotifier {
   // -------------------------- Getter Methods --------------------------
   dynamic get getUserName => _user?.displayName;
   Image? get getUserProfileImage => _userProfileImage;
+  YouTubeApi? get getYoutubeApi => youtubeApi;
 
-  Future<Map<Response, String>> singIn() async {
+  Future<Map<Response, String>> signIn() async {
     try {
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return {Response.firebaseNoUser: ''};
@@ -35,9 +38,9 @@ class FirebaseHandler extends ChangeNotifier {
 
       await _firebaseAuth.signInWithCredential(credentials);
 
-      var httpClient = await _googleSignIn.authenticatedClient();
-      if (httpClient != null) {
-        _youtubeApi = YouTubeApi(httpClient);
+      AuthClient? authClient = await _googleSignIn.authenticatedClient();
+      if (authClient != null) {
+        youtubeApi = YouTubeApi(authClient);
       }
       if (_user?.photoUrl != null) {
         _userProfileImage = Image.network(

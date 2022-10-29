@@ -3,10 +3,12 @@ import 'package:lottie/lottie.dart';
 import 'package:mixyr/config/config.dart';
 import 'package:mixyr/screens/home/home_screen.dart';
 import 'package:mixyr/state_handlers/firebase/firebase_handler.dart';
+import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
 import 'package:mixyr/widgets/icons/mixyr_logo.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
-
+import 'package:googleapis/youtube/v3.dart';
+import 'package:mixyr/packages/youtube_api/youtube_api.dart';
 import 'login_page.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -27,9 +29,14 @@ class _LoadingPageState extends State<LoadingPage>
     super.initState();
     _lottieController = AnimationController(vsync: this);
     Provider.of<FirebaseHandler>(context, listen: false)
-        .singIn()
+        .signIn()
         .then((Map<Response, String> response) {
       if (response.keys.first == Response.success) {
+        Provider.of<YoutubeHandler>(context, listen: false).setYoutubeApi =
+            YoutubeAPI(
+          youtubeApi:
+              Provider.of<FirebaseHandler>(context, listen: false).youtubeApi!,
+        );
         Navigator.pushNamed(context, HomeScreen.id);
       } else if (response.keys.first == Response.firebaseNoUser) {
         Navigator.push(

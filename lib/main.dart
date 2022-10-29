@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mixyr/state_handlers/proxy/proxy_handler.dart';
+import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'screens/home/home_screen.dart';
@@ -81,6 +80,8 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
             create: (BuildContext context) =>
                 AudioHandlerAdmin(audioHandler: _audioHandler)),
+        ChangeNotifierProvider(
+            create: (BuildContext context) => YoutubeHandler()),
       ],
       child: MaterialApp(
         title: 'Mixyr',

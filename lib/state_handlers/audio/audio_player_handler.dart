@@ -6,11 +6,13 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:mixyr/config/config.dart';
+import 'package:mixyr/packages/youtube_api/youtube_api.dart';
 
 final AudioPlayer _audioPlayer = AudioPlayer();
 
 class AudioHandlerAdmin extends ChangeNotifier {
   late AudioHandler _audioHandler;
+  String? currentVideoId;
   final ConcatenatingAudioSource _currentPlaylist =
       ConcatenatingAudioSource(children: []);
   void toggle() {
@@ -25,7 +27,8 @@ class AudioHandlerAdmin extends ChangeNotifier {
     fit: BoxFit.fill,
   );
   Color? _dominantColor;
-
+  YoutubeAPI? youtubeApi;
+  // ---------------------- Getter Functions ----------------------
   Color? get getDominantColor => _dominantColor;
   MediaItem? get getMediaItem => _audioHandler.mediaItem.value;
   Duration get getAudioPosition => _audioPlayer.position;
@@ -39,6 +42,10 @@ class AudioHandlerAdmin extends ChangeNotifier {
           (mediaItem, position) => MediaState(mediaItem, position));
   AudioHandler get getAudioHandler => _audioHandler;
   Stream<Duration> get positionStream => _audioPlayer.positionStream;
+  String get getCurrentVideoId => currentVideoId ?? '';
+
+  // ---------------------- Getter Functions ----------------------
+  set setYoutubeApi(YoutubeAPI yApi) => youtubeApi = yApi;
 
   Future<void> calcDominantColor() async {
     _dominantColor = await dominantColor(
@@ -83,6 +90,7 @@ class AudioHandlerAdmin extends ChangeNotifier {
 
   Future<void> addNewAudio(String audioId) async {
     MediaItem mItem = await _getAudioUri(audioId);
+    currentVideoId = audioId;
     await _audioHandler.updateMediaItem(mItem);
     await _currentPlaylist.add(AudioSource.uri(Uri.parse(mItem.id)));
     isMediaInitialised.value = true;

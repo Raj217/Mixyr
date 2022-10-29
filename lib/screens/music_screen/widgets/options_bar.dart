@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/youtube/v3.dart';
 import 'package:mixyr/config/config.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
 
 enum IconType { lottie, icon }
 
@@ -13,78 +16,98 @@ class OptionsBar extends StatefulWidget {
 
 class _OptionsBarState extends State<OptionsBar> with TickerProviderStateMixin {
   late AnimationController likeAnimationController;
-  bool isLiked = false;
-  bool isDisliked = false;
+  String? rating;
 
   @override
   void initState() {
     super.initState();
     likeAnimationController = AnimationController(vsync: this);
+    getRating(Provider.of<YoutubeHandler>(context, listen: false))
+        .then((value) => setState(() {
+              if (rating == 'like') {
+                likeAnimationController.value = 0.59;
+              }
+            }));
+  }
+
+  Future<void> getRating(YoutubeHandler handler) async {
+    rating = await handler.getCurrentVideoRating();
+    return;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          _icon(
-            iconType: IconType.lottie,
-            lottiePath: paths[Paths.lottieLike]!,
-            animationController: likeAnimationController,
-            onTap: () {
-              setState(() {
-                isLiked = isLiked == true ? false : true;
-                isDisliked = isLiked == true ? false : false;
-                if (isLiked == false) {
-                  likeAnimationController.animateTo(1).then((value) {
-                    likeAnimationController.value = 0;
-                    likeAnimationController.stop();
-                  });
+    return Consumer<YoutubeHandler>(
+        builder: (BuildContext context, YoutubeHandler handler, _) {
+      return SizedBox(
+        height: 50,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
+          children: [
+            _icon(
+              iconType: IconType.lottie,
+              lottiePath: paths[Paths.lottieLike]!,
+              animationController: likeAnimationController,
+              onTap: () async {
+                if (rating == 'like') {
+                  await handler.setNone();
                 } else {
-                  likeAnimationController.animateTo(0.59);
+                  await handler.setLiked();
                 }
-              });
-            },
-          ),
-          _icon(
-            iconType: IconType.icon,
-            icon: isDisliked == true
-                ? Icons.thumb_down
-                : Icons.thumb_down_alt_outlined,
-            onTap: () {
-              setState(() {
-                isDisliked = isDisliked == true ? false : true;
-                isLiked = isDisliked == true ? false : true;
-                if (isLiked == false) {
-                  likeAnimationController.animateTo(1).then((value) {
-                    likeAnimationController.value = 0;
-                    likeAnimationController.stop();
+                getRating(handler).then((_) {
+                  setState(() {
+                    if (rating == 'like') {
+                      likeAnimationController.animateTo(0.59);
+                    } else {
+                      likeAnimationController.value = 0;
+                    }
                   });
+                });
+              },
+            ),
+            _icon(
+              iconType: IconType.icon,
+              icon: rating == 'dislike'
+                  ? Icons.thumb_down
+                  : Icons.thumb_down_alt_outlined,
+              onTap: () async {
+                if (rating == 'dislike') {
+                  await handler.setNone();
+                } else {
+                  await handler.setDisliked();
                 }
-              });
-            },
-          ),
-          _icon(
-            iconType: IconType.icon,
-            icon: Icons.share,
-            onTap: () {},
-          ),
-          _icon(
-            iconType: IconType.icon,
-            icon: Icons.download,
-            onTap: () {},
-          ),
-          _icon(
-            iconType: IconType.icon,
-            icon: Icons.playlist_add,
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
+                getRating(handler).then((value) {
+                  setState(() {
+                    if (rating == 'dislike') {
+                      likeAnimationController.animateTo(1).then((value) {
+                        likeAnimationController.value = 0;
+                        likeAnimationController.stop();
+                      });
+                    }
+                  });
+                });
+              },
+            ),
+            _icon(
+              iconType: IconType.icon,
+              icon: Icons.share,
+              onTap: () {},
+            ),
+            _icon(
+              iconType: IconType.icon,
+              icon: Icons.download,
+              onTap: () {},
+            ),
+            _icon(
+              iconType: IconType.icon,
+              icon: Icons.playlist_add,
+              onTap: () {},
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 

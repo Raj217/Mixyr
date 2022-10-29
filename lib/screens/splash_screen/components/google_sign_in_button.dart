@@ -6,6 +6,9 @@ import 'package:mixyr/state_handlers/storage/storage_handler.dart';
 import 'package:mixyr/widgets/buttons/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
+import 'package:googleapis/youtube/v3.dart';
+import 'package:mixyr/packages/youtube_api/youtube_api.dart';
 
 class GoogleSignInButton extends StatelessWidget {
   const GoogleSignInButton({Key? key}) : super(key: key);
@@ -21,9 +24,14 @@ class GoogleSignInButton extends StatelessWidget {
       ),
       onTap: () {
         Provider.of<FirebaseHandler>(context, listen: false)
-            .singIn()
+            .signIn()
             .then((Map<Response, String> response) {
           if (response.keys.first == Response.success) {
+            Provider.of<YoutubeHandler>(context, listen: false).setYoutubeApi =
+                YoutubeAPI(
+                    youtubeApi:
+                        Provider.of<FirebaseHandler>(context, listen: false)
+                            .youtubeApi!);
             StorageHandler().isNewUser = false;
             Navigator.pushNamed(context, HomeScreen.id);
           } else if (response.keys.first == Response.firebasePlatformError) {
