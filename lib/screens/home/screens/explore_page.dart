@@ -10,6 +10,11 @@ class ExplorePage extends StatefulWidget {
 class _ExplorePageState extends State<ExplorePage> {
   @override
   Widget build(BuildContext context) {
-    return SliverList(delegate: SliverChildListDelegate([]));
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      Center(
+        child: Text("Explore Page"),
+      )
+    ]));
   }
 }

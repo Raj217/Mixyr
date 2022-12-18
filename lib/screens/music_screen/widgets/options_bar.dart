@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/youtube/v3.dart';
+import 'package:mixyr/state_handlers/audio/audio_player_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:mixyr/config/config.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:http/http.dart' as http;
 
 enum IconType { lottie, icon }
 
@@ -22,16 +26,14 @@ class _OptionsBarState extends State<OptionsBar> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     likeAnimationController = AnimationController(vsync: this);
-    getRating(Provider.of<YoutubeHandler>(context, listen: false))
-        .then((value) => setState(() {
-              if (rating == 'like') {
-                likeAnimationController.value = 0.59;
-              }
-            }));
+    getRating(Provider.of<YoutubeHandler>(context, listen: false));
+    if (rating == 'like') {
+      likeAnimationController.value = 0.59;
+    }
   }
 
-  Future<void> getRating(YoutubeHandler handler) async {
-    rating = await handler.getCurrentVideoRating();
+  void getRating(YoutubeHandler handler) {
+    rating = handler.getCurrentVideoRating();
     return;
   }
 
@@ -49,20 +51,21 @@ class _OptionsBarState extends State<OptionsBar> with TickerProviderStateMixin {
               iconType: IconType.lottie,
               lottiePath: paths[Paths.lottieLike]!,
               animationController: likeAnimationController,
-              onTap: () async {
+              onTap: () {
                 if (rating == 'like') {
-                  await handler.setNone();
+                  handler.setNone();
+                  rating = 'none';
                 } else {
-                  await handler.setLiked();
+                  handler.setLiked();
+                  rating = 'like';
                 }
-                getRating(handler).then((_) {
-                  setState(() {
-                    if (rating == 'like') {
-                      likeAnimationController.animateTo(0.59);
-                    } else {
-                      likeAnimationController.value = 0;
-                    }
-                  });
+                setState(() {
+                  if (rating == 'like') {
+                    likeAnimationController.animateTo(0.59);
+                  } else {
+                    likeAnimationController.value = 0;
+                    rating = 'like';
+                  }
                 });
               },
             ),
@@ -73,32 +76,30 @@ class _OptionsBarState extends State<OptionsBar> with TickerProviderStateMixin {
                   : Icons.thumb_down_alt_outlined,
               onTap: () async {
                 if (rating == 'dislike') {
-                  await handler.setNone();
+                  handler.setNone();
+                  rating = 'none';
                 } else {
-                  await handler.setDisliked();
+                  handler.setDisliked();
+                  rating = 'dislike';
                 }
-                getRating(handler).then((value) {
-                  setState(() {
-                    if (rating == 'dislike') {
-                      likeAnimationController.animateTo(1).then((value) {
-                        likeAnimationController.value = 0;
-                        likeAnimationController.stop();
-                      });
-                    }
-                  });
+                setState(() {
+                  if (rating == 'dislike') {
+                    likeAnimationController.value = 0;
+                  }
                 });
               },
             ),
             _icon(
               iconType: IconType.icon,
               icon: Icons.share,
-              onTap: () {},
+              onTap: () {
+                String? currentId = handler.getCurrentId;
+                if (currentId != null) {
+                  Share.share('https://youtu.be/$currentId');
+                }
+              },
             ),
-            _icon(
-              iconType: IconType.icon,
-              icon: Icons.download,
-              onTap: () {},
-            ),
+            _icon(iconType: IconType.icon, icon: Icons.download, onTap: () {}),
             _icon(
               iconType: IconType.icon,
               icon: Icons.playlist_add,
@@ -141,11 +142,14 @@ class _icon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: gap),
-      child: SizedBox(
+      child: Container(
         height: height,
         width: width,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50), color: Colors.transparent),
         child: iconType == IconType.lottie
-            ? GestureDetector(
+            ? InkWell(
+                borderRadius: BorderRadius.circular(50),
                 onTap: onTap,
                 child: Lottie.asset(
                   lottiePath!,
@@ -156,7 +160,8 @@ class _icon extends StatelessWidget {
                   },
                 ),
               )
-            : GestureDetector(
+            : InkWell(
+                borderRadius: BorderRadius.circular(50),
                 onTap: onTap,
                 child: Icon(
                   icon,

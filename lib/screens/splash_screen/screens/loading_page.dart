@@ -7,7 +7,8 @@ import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
 import 'package:mixyr/widgets/icons/mixyr_logo.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:googleapis/youtube/v3.dart';
+import 'package:mixyr/utils/storage_handler.dart';
+import 'package:mixyr/utils/proxy_handler.dart';
 import 'package:mixyr/packages/youtube_api/youtube_api.dart';
 import 'login_page.dart';
 
@@ -30,13 +31,17 @@ class _LoadingPageState extends State<LoadingPage>
     _lottieController = AnimationController(vsync: this);
     Provider.of<FirebaseHandler>(context, listen: false)
         .signIn()
-        .then((Map<Response, String> response) {
+        .then((Map<Response, String> response) async {
       if (response.keys.first == Response.success) {
         Provider.of<YoutubeHandler>(context, listen: false).setYoutubeApi =
             YoutubeAPI(
           youtubeApi:
               Provider.of<FirebaseHandler>(context, listen: false).youtubeApi!,
         );
+        if (await StorageHandler().getIsProxyEnabled()) {
+          await ProxyHandler.setUpProxy(
+              host: '172.16.199.40', port: '8080'); // TODO : make dynamic
+        }
         Navigator.pushNamed(context, HomeScreen.id);
       } else if (response.keys.first == Response.firebaseNoUser) {
         Navigator.push(
@@ -72,7 +77,8 @@ class _LoadingPageState extends State<LoadingPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SizedBox(
           height: relativeHeight(1, context),
           width: relativeWidth(1, context),

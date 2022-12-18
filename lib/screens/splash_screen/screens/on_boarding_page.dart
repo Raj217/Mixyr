@@ -5,6 +5,7 @@ import 'package:mixyr/screens/splash_screen/components/google_sign_in_button.dar
 import 'package:mixyr/widgets/background/gradient_background_overlay.dart';
 import 'package:mixyr/widgets/buttons/expanded_button.dart';
 import 'package:mixyr/widgets/pages/page_indicator.dart';
+import 'package:mixyr/utils/basic_utilities.dart';
 
 class OnBoardingPage extends StatefulWidget {
   static const String id = "On Boarding Page";
@@ -77,7 +78,8 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       )
     ];
     return Scaffold(
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SingleChildScrollView(
           child: SizedBox(
               height: relativeHeight(0.95, context),

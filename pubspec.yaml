@@ -32,6 +32,8 @@ dependencies:
   animated_toggle_switch: ^0.5.2        # toggling
   page_transition: ^2.0.9               # page transition
   audio_video_progress_bar: ^0.10.0     # progress slider
+  share_plus: ^6.1.0                    # exporting links
+  flutter_downloader: ^1.8.4            # for downloading
 
   # audio
   just_audio: ^0.9.20
@@ -47,6 +49,8 @@ dependencies:
   http: ^0.13.5                # for handling requests
   html: ^0.15.0                # for parsing
   http_proxy: ^1.2.0           # for http proxy
+  external_path: ^1.0.3        # to store file in external location relative to mixyr folder
+  permission_handler: ^10.2.0  # Handling Permission
 
 dev_dependencies:
   flutter_test:

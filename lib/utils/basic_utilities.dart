@@ -1,12 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
-
+import 'package:html/parser.dart' show parse;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mixyr/utils/proxy_handler.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-import 'paths.dart';
+import '../config/configurations/paths.dart';
 import 'package:http/http.dart' as http;
-// import 'package:web_scraper/web_scraper.dart';
+import 'package:external_path/external_path.dart';
 
 // -------------------------- System related --------------------------
 void setBottomNavBarColor({required Color color}) {
@@ -46,15 +49,19 @@ String scrapeYoutubeAudioID({required String link}) {
   return audioID;
 }
 
-dynamic getLyrics({required String songName, required String artist}) async {
+Future<String> getLyrics({required String songName, String? artist}) async {
   if (songName.contains('(')) {
     songName = songName.substring(0, songName.indexOf('('));
   }
-
-  // final webScraper = WebScraper('https://google.com');
-  // String query = 'search?q=' + songName.replaceAll(' ', '+') + '+lyrics';
-  // if (await webScraper.loadWebPage(query)) {
-  //   dynamic elements = webScraper.getElement('div', ['class']);
-  //   print(elements);
-  // }
+  final String query =
+      'http://www.google.com/search?q=${songName.replaceAll(' ', '+').replaceAll('|', '')}${(artist ?? '').replaceAll(' ', '+').replaceAll('|', '')}+lyrics';
+  print(query);
+  var res = await http.get(Uri.parse(query));
+  if (res.statusCode >= 200 && res.statusCode < 300) {
+    var doc = parse(res.body);
+    String data =
+        doc.outerHtml.substring(doc.outerHtml.indexOf('BNeawe tAd8D AP7Wnd'));
+    return data;
+  }
+  return '';
 }

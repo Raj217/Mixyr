@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/state_handlers/storage/storage_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeHandler extends ChangeNotifier {
   ThemeHandler? _themeHandler;
   late ThemeMode _themeMode;
 
-  ThemeHandler({ThemeHandler? themeHandler, SharedPreferences? prefs}) {
+  ThemeHandler({ThemeHandler? themeHandler}) {
     _themeHandler = themeHandler;
     _themeMode =
         StorageHandler().isDarkTheme == true ? ThemeMode.dark : ThemeMode.light;

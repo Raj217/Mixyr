@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mixyr/state_handlers/storage/storage_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
 
 import 'screens/loading_page.dart';
 import 'screens/on_boarding_page.dart';

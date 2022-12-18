@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mixyr/config/config.dart';
+import 'package:mixyr/utils/basic_utilities.dart';
 
 class GradientBackgroundOverlay extends StatelessWidget {
   final Widget child;

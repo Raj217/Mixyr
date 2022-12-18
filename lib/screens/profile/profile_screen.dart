@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mixyr/packages/settings_ui/settings_ui.dart';
-import 'package:mixyr/state_handlers/proxy/proxy_handler.dart';
-import 'package:mixyr/state_handlers/storage/storage_handler.dart';
+import 'package:mixyr/utils/proxy_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
 import 'package:mixyr/widgets/buttons/expanded_button.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,7 +11,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: SettingsList(
           leading: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

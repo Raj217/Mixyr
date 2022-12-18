@@ -44,7 +44,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
     return CustomNavigationBar(
       iconSize: widget.height,
       currentIndex: _currentlySelectedScreen,
-      borderRadius: Radius.circular(10),
+      borderRadius: const Radius.circular(10),
       items: [
         _getNavBarItem(
             icon: Icons.home_outlined, selectedIcon: Icons.home, title: "Home"),
@@ -61,7 +61,9 @@ class _CustomNavBarState extends State<CustomNavBar> {
         setState(() {
           _currentlySelectedScreen = index;
         });
-        widget.onPageChange ?? (index);
+        if (widget.onPageChange != null) {
+          widget.onPageChange!(index);
+        }
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:mixyr/screens/music_screen/sections/up_next_section/up_next_section.dart';
 import 'package:mixyr/state_handlers/audio/audio_player_handler.dart';
 import 'package:mixyr/widgets/buttons/expanded_button.dart';
 import 'package:provider/provider.dart';
@@ -31,22 +32,27 @@ class _MusicScreenState extends State<MusicScreen> {
     return Consumer<AudioHandlerAdmin>(
       builder: (BuildContext context, AudioHandlerAdmin audioHandler, _) {
         return Scaffold(
-          body: SafeArea(
-            child: StreamBuilder(
-                stream: audioHandler.getMediaStateStream,
-                builder: (context, AsyncSnapshot snapshot) {
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    position = snapshot.data?.position;
-                    mediaItem = snapshot.data?.mediaItem;
-                  });
-                  return StreamBuilder(
-                    stream: audioHandler.getAudioHandler.playbackState
-                        .map((state) => state.playing)
-                        .distinct(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      isPlaying = snapshot.data ?? false;
-                      return AnimatedContainer(
-                        duration: kDefaultAnimDuration,
+          body: StreamBuilder(
+              stream: audioHandler.getMediaStateStream,
+              builder: (context, AsyncSnapshot snapshot) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  position = snapshot.data?.position;
+                  mediaItem = snapshot.data?.mediaItem;
+                });
+                return StreamBuilder(
+                  stream: audioHandler.getAudioHandler.playbackState
+                      .map((state) => state.playing)
+                      .distinct(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    isPlaying = snapshot.data ?? false;
+                    return AnimatedContainer(
+                      duration: kDefaultAnimDuration,
+                      color: audioHandler.getDominantColor != null
+                          ? audioHandler.getDominantColor!.withOpacity(0.3)
+                          : null,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top),
                         child: Column(
                           children: [
                             Row(
@@ -103,9 +109,6 @@ class _MusicScreenState extends State<MusicScreen> {
                                   foregroundObjectSize: 50,
                                   onTap: () {
                                     mediaItem = audioHandler.getMediaItem;
-                                    getLyrics(
-                                        songName: mediaItem?.title ?? '',
-                                        artist: mediaItem?.artist ?? '');
                                   },
                                 ),
                                 StreamBuilder(
@@ -132,13 +135,14 @@ class _MusicScreenState extends State<MusicScreen> {
                                 ),
                               ],
                             ),
+                            UpNextSection(),
                           ],
                         ),
-                      );
-                    },
-                  );
-                }),
-          ),
+                      ),
+                    );
+                  },
+                );
+              }),
         );
       },
     );

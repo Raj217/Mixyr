@@ -103,12 +103,10 @@ class _MiniplayerState extends State<Miniplayer> with TickerProviderStateMixin {
                               ? relativeHeight(1, context)
                               : relativeHeight(1, context) -
                                   widget.height - // For bottom nav bar
-                                  2 *
+                                  1.6 *
                                       responsiveHeight(thumbnailSize,
-                                          context) - // for thumbnail
-                                  4 * padding - // for paddings
-                                  -2 *
-                                      progressBarHeight), // for bottom progress bar
+                                          context) - // for paddings
+                                  -progressBarHeight), // for bottom progress bar
                       child: Visibility(
                         visible: showMiniPlayer,
                         child: StreamBuilder(

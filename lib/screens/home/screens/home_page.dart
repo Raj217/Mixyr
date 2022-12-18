@@ -11,6 +11,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return SliverList(delegate: SliverChildListDelegate([]));
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      Center(
+        child: Text("Home Page"),
+      )
+    ]));
   }
 }

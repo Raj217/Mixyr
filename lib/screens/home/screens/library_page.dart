@@ -10,6 +10,11 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    return SliverList(delegate: SliverChildListDelegate([]));
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      Center(
+        child: Text("Library Page"),
+      )
+    ]));
   }
 }

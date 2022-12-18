@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mixyr/config/config.dart';
 import 'package:mixyr/screens/home/home_screen.dart';
 import 'package:mixyr/state_handlers/firebase/firebase_handler.dart';
-import 'package:mixyr/state_handlers/storage/storage_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
 import 'package:mixyr/widgets/buttons/rounded_button.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
-import 'package:googleapis/youtube/v3.dart';
+import 'package:mixyr/utils/proxy_handler.dart';
 import 'package:mixyr/packages/youtube_api/youtube_api.dart';
 
 class GoogleSignInButton extends StatelessWidget {
@@ -25,7 +25,7 @@ class GoogleSignInButton extends StatelessWidget {
       onTap: () {
         Provider.of<FirebaseHandler>(context, listen: false)
             .signIn()
-            .then((Map<Response, String> response) {
+            .then((Map<Response, String> response) async {
           if (response.keys.first == Response.success) {
             Provider.of<YoutubeHandler>(context, listen: false).setYoutubeApi =
                 YoutubeAPI(
@@ -33,6 +33,10 @@ class GoogleSignInButton extends StatelessWidget {
                         Provider.of<FirebaseHandler>(context, listen: false)
                             .youtubeApi!);
             StorageHandler().isNewUser = false;
+            if (await StorageHandler().getIsProxyEnabled()) {
+              await ProxyHandler.setUpProxy(
+                  host: '172.16.199.40', port: '8080');
+            }
             Navigator.pushNamed(context, HomeScreen.id);
           } else if (response.keys.first == Response.firebasePlatformError) {
             QuickAlert.show(

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -7,12 +6,12 @@ import 'package:rxdart/rxdart.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:mixyr/config/config.dart';
 import 'package:mixyr/packages/youtube_api/youtube_api.dart';
+import 'package:mixyr/utils/basic_utilities.dart';
 
 final AudioPlayer _audioPlayer = AudioPlayer();
 
 class AudioHandlerAdmin extends ChangeNotifier {
   late AudioHandler _audioHandler;
-  String? currentVideoId;
   final ConcatenatingAudioSource _currentPlaylist =
       ConcatenatingAudioSource(children: []);
   void toggle() {
@@ -27,9 +26,12 @@ class AudioHandlerAdmin extends ChangeNotifier {
     fit: BoxFit.fill,
   );
   Color? _dominantColor;
+  String? currentVideoId;
   YoutubeAPI? youtubeApi;
+  String _lyrics = '';
   // ---------------------- Getter Functions ----------------------
   Color? get getDominantColor => _dominantColor;
+  String get lyrics => _lyrics;
   MediaItem? get getMediaItem => _audioHandler.mediaItem.value;
   Duration get getAudioPosition => _audioPlayer.position;
   Duration? get getAudioTotalDuration => _audioPlayer.duration;
@@ -43,8 +45,11 @@ class AudioHandlerAdmin extends ChangeNotifier {
   AudioHandler get getAudioHandler => _audioHandler;
   Stream<Duration> get positionStream => _audioPlayer.positionStream;
   String get getCurrentVideoId => currentVideoId ?? '';
+  String get getAudioDownloadLink => _audioHandler.mediaItem.value!.id;
+  String get getAudioTitle => _audioHandler.mediaItem.value!.title;
+  String? get getAudioArtist => _audioHandler.mediaItem.value!.artist;
 
-  // ---------------------- Getter Functions ----------------------
+  // ---------------------- Setter Functions ----------------------
   set setYoutubeApi(YoutubeAPI yApi) => youtubeApi = yApi;
 
   Future<void> calcDominantColor() async {
@@ -52,14 +57,16 @@ class AudioHandlerAdmin extends ChangeNotifier {
         img: Image.network(_audioHandler.mediaItem.value!.artUri.toString()));
   }
 
-  List<MediaItem> _currentPlaylistMediaItems = [];
+  final List<MediaItem> _currentPlaylistMediaItems = [];
   Future<MediaItem> _getAudioUri(String audioID) async {
     var manifest =
         await YoutubeExplode().videos.streamsClient.getManifest(audioID);
     var video = await YoutubeExplode().videos.get(audioID);
-
     MediaItem mediaItem = MediaItem(
-      id: manifest.audioOnly.first.url.toString(),
+      id: manifest.audioOnly
+          .withHighestBitrate()
+          .url
+          .toString(), // TODO: Update
       title: video.title,
       artist: video.author,
       duration: video.duration,
@@ -90,8 +97,8 @@ class AudioHandlerAdmin extends ChangeNotifier {
 
   Future<void> addNewAudio(String audioId) async {
     MediaItem mItem = await _getAudioUri(audioId);
-    currentVideoId = audioId;
     await _audioHandler.updateMediaItem(mItem);
+    currentVideoId = audioId;
     await _currentPlaylist.add(AudioSource.uri(Uri.parse(mItem.id)));
     isMediaInitialised.value = true;
     try {
@@ -111,6 +118,7 @@ class AudioHandlerAdmin extends ChangeNotifier {
       );
     }
     calcDominantColor();
+    _lyrics = await getLyrics(songName: mItem.title, artist: mItem.artist);
     notifyListeners();
   }
 }

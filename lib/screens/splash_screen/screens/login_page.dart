@@ -3,6 +3,7 @@ import 'package:mixyr/config/config.dart';
 import 'package:mixyr/screens/splash_screen/components/google_sign_in_button.dart';
 import 'package:mixyr/widgets/background/gradient_background_overlay.dart';
 import 'package:mixyr/widgets/icons/mixyr_logo.dart';
+import 'package:mixyr/utils/basic_utilities.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = "Login Page";
@@ -25,7 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: GradientBackgroundOverlay(
           backgroundHeight: _backgroundHeight,
           backgroundNumber: _gradientBackgroundNumber,

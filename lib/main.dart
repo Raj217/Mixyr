@@ -1,15 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mixyr/state_handlers/proxy/proxy_handler.dart';
 import 'package:mixyr/state_handlers/youtube/youtube_handler.dart';
+import 'package:mixyr/utils/storage_handler.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/splash_screen/splash_screen.dart';
 import 'state_handlers/audio/audio_player_handler.dart';
 import 'state_handlers/firebase/firebase_handler.dart';
-import 'state_handlers/storage/storage_handler.dart';
 import 'state_handlers/theme/brightness/dark.dart';
 import 'state_handlers/theme/brightness/light.dart';
 import 'state_handlers/theme/theme_handler.dart';
@@ -28,29 +27,28 @@ void main() async {
         androidNotificationChannelName: 'Audio playback',
         androidNotificationOngoing: true,
       ));
+  // ---------------------- initializing storage ---------------------
+  StorageHandler();
 
-  // ---------------------- initializing proxy  ---------------------
-  if (await StorageHandler().getIsProxyEnabled()) {
-    await ProxyHandler.setUpProxy(host: '172.16.199.40', port: '8080');
-  }
   // ---------------------- initializing firebase ---------------------
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   Paint.enableDithering = true;
+
   // debugRepaintRainbowEnabled = true;
-  runApp(const MyApp());
+  runApp(const Mixyr());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class Mixyr extends StatefulWidget {
+  const Mixyr({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<Mixyr> createState() => _MixyrState();
 }
 
-class _MyAppState extends State<MyApp> {
-  themeListener() {
+class _MixyrState extends State<Mixyr> {
+  void themeListener() {
     if (mounted) {
       setState(() {});
     }
