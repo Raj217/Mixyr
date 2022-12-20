@@ -34,6 +34,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     searchQuery = Provider.of<YoutubeHandler>(context).query;
     if (searchQuery.isNotEmpty) {
       setState(() {
@@ -41,10 +45,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         searchPage = true;
       });
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,

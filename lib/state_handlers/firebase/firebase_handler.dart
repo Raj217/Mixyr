@@ -37,8 +37,8 @@ class FirebaseHandler extends ChangeNotifier {
           accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
       await _firebaseAuth.signInWithCredential(credentials);
-
       AuthClient? authClient = await _googleSignIn.authenticatedClient();
+
       if (authClient != null) {
         youtubeApi = YouTubeApi(authClient);
       }

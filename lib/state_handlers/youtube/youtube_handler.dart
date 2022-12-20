@@ -1,8 +1,8 @@
 import 'dart:async';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:googleapis/youtube/v3.dart' as yt;
 import 'package:mixyr/packages/youtube_api/youtube_api.dart';
+import 'package:mixyr/utils/basic_utilities.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeHandler extends ChangeNotifier {
@@ -49,25 +49,52 @@ class YoutubeHandler extends ChangeNotifier {
     return;
   }
 
-  Future<Map<ResponseContent, dynamic>?> _getSearchList(String searchQuery,
+  Future<yt.SearchListResponse?> _getSearchList(String searchQuery,
       {String? pageToken}) async {
     try {
+      // print(await YoutubeExplode().search(searchQuery));
       return await youtubeApi!.search(
-          searchQuery: searchQuery, pageToken: pageToken, maxResults: 10);
-    } catch (e) {}
+          //TODO: Improve
+          searchQuery: searchQuery,
+          pageToken: pageToken,
+          maxResults: 10);
+    } catch (e) {
+      print(e);
+    }
 
     return null;
   }
 
-  Future<Video> _getVideoDetail(String videoID) async {
-    Video video = await YoutubeExplode().videos.get(videoID);
+  Future<Video> _getVideoDetail(yt.SearchResult res) async {
+    print(res.snippet?.title ?? "");
+    // Duration dur = parseDuration(
+    //     (await youtubeApi?.getVideoDetails(res.id?.videoId ?? ""))
+    //             ?.items?[0]
+    //             .contentDetails
+    //             ?.duration ??
+    //         "");
+
+    Video video = Video(
+        VideoId(res.id?.videoId ?? ""),
+        res.snippet?.title ?? "",
+        res.snippet?.channelTitle ?? "",
+        ChannelId(res.snippet?.channelId ?? ""),
+        null,
+        null,
+        res.snippet?.publishedAt,
+        res.snippet?.description ?? "",
+        Duration.zero,
+        ThumbnailSet(res.id?.videoId ?? ""),
+        null,
+        const Engagement(0, 0, 0), // For optimisation
+        res.snippet?.liveBroadcastContent == 'live');
     return video;
   }
 
   /// set needMoreVideos to true if you want to get more videos with same searchQuery
-  Future<void> videoDetails(String? searchQuery,
-      {bool needMoreVideos = false}) async {
-    Map<ResponseContent, dynamic>? res;
+  Future<void> videoDetails(
+      {String? searchQuery, bool needMoreVideos = false}) async {
+    yt.SearchListResponse? res;
     if (searchQuery != null) {
       res = await _getSearchList(searchQuery);
       if (res != null) {
@@ -77,10 +104,10 @@ class YoutubeHandler extends ChangeNotifier {
       res = await _getSearchList(query, pageToken: pageToken);
     }
     if (res != null) {
-      pageToken = res[ResponseContent.nextPageToken];
-      for (int i = 0; i < (res[ResponseContent.videoIDs] ?? []).length; i++) {
+      pageToken = res.nextPageToken;
+      for (int i = 0; i < (res.items ?? []).length; i++) {
         videoStream
-            .add(await _getVideoDetail(res[ResponseContent.videoIDs][i]));
+            .add(await _getVideoDetail(res.items?[i] as yt.SearchResult));
       }
     }
     return;

@@ -65,3 +65,36 @@ Future<String> getLyrics({required String songName, String? artist}) async {
   }
   return '';
 }
+
+Duration parseDuration(String time) {
+  if (time.isEmpty || time[0] != 'P') {
+    return Duration.zero;
+  }
+  int t = 0;
+  int weeks = 0, days = 0, hours = 0, mins = 0, secs = 0;
+  bool isTimeDesignatorOn = false;
+  for (int i = 1; i < time.length; i++) {
+    if (time[i] == "W") {
+      weeks = t;
+      t = 0;
+    } else if (time[i] == "D") {
+      days = t;
+      t = 0;
+    } else if (time[i] == "T") {
+      isTimeDesignatorOn = true;
+    } else if (time[i] == "H") {
+      hours = t;
+      t = 0;
+    } else if (time[i] == "M" && isTimeDesignatorOn) {
+      mins = t;
+      t = 0;
+    } else if (time[i] == "S") {
+      secs = t;
+      t = 0;
+    } else {
+      t = t * 10 + int.parse(time[i]);
+    }
+  }
+  return Duration(
+      days: weeks * 7 + days, hours: hours, minutes: mins, seconds: secs);
+}

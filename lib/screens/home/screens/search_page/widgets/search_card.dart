@@ -32,70 +32,80 @@ class SearchCard extends StatelessWidget {
         duration = "${formatTime(mins)}:$duration";
       }
       if (hours != 0) {
-        duration = "${formatTime(hours)}:$duration";
+        if (mins == 0) {
+          duration = "${formatTime(hours)}:00:$duration";
+        } else {
+          duration = "${formatTime(hours)}:$duration";
+        }
+      }
+      if (hours == 0 && mins == 0) {
+        duration += "s";
       }
     }
-    return SizedBox(
-      width: screenSize.width * (1 - heightWRTScreenWidth / 4),
-      child: Row(
-        children: [
-          SizedBox(
-            height: height,
-            width: height * 16 / 9, // Youtube thumbnail ratio
-            child: Image.network(
-              video.thumbnails.standardResUrl,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: SizedBox(
+        width: screenSize.width * (1 - heightWRTScreenWidth / 4),
+        child: Row(
+          children: [
+            SizedBox(
+              height: height,
+              width: height * 16 / 9, // Youtube thumbnail ratio
+              child: Image.network(
+                video.thumbnails.lowResUrl,
+              ),
             ),
-          ),
-          const SizedBox(width: 5),
-          SizedBox(
-            width: screenSize.width - height * 21 / 9,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  video.title,
-                  maxLines: 2,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                    overflow: TextOverflow.ellipsis,
+            const SizedBox(width: 5),
+            SizedBox(
+              width: screenSize.width - height * 21 / 9,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    video.title,
+                    maxLines: 2,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                SizedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        duration,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      const Icon(
-                        Icons.circle,
-                        size: 8,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(width: 5),
-                      SizedBox(
-                        width: screenSize.width - height * 32 / 9,
-                        child: Text(
-                          video.author,
+                  const SizedBox(height: 5),
+                  SizedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          duration,
                           style: const TextStyle(
                             color: Colors.grey,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+                        const SizedBox(width: 5),
+                        const Icon(
+                          Icons.circle,
+                          size: 8,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 5),
+                        SizedBox(
+                          width: screenSize.width - height * 32 / 9,
+                          child: Text(
+                            video.author,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

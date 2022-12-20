@@ -35,15 +35,19 @@ class _SearchPageState extends State<SearchPage> {
     widget.scrollController.addListener(() {
       if (widget.scrollController.position.atEdge &&
           widget.scrollController.position.pixels != 0) {
-        search();
+        search(getMoreContent: true);
       }
     });
   }
 
-  void search() {
-    print("searching");
-    Provider.of<YoutubeHandler>(context, listen: false)
-        .videoDetails(widget.query);
+  void search({bool getMoreContent = false}) {
+    if (getMoreContent) {
+      Provider.of<YoutubeHandler>(context, listen: false)
+          .videoDetails(needMoreVideos: true);
+    } else {
+      Provider.of<YoutubeHandler>(context, listen: false)
+          .videoDetails(searchQuery: widget.query);
+    }
   }
 
   @override
